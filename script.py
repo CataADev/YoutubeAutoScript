@@ -2,20 +2,30 @@ import sys
 import time
 import logging
 
-import cv2
-import numpy as np
-import pyautogui
+# import cv2
+# import numpy as np
+# import pyautogui
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
-# getting the driver
+
+# Configuring the logging
+LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
+logging.basicConfig(filename = "logfile.log",
+                    filemode = "w",
+                    format = LOG_FORMAT)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# configuring the driver
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
-# options.add_argument("--start-maximized") #to start in fullscreen
+# options.add_argument("--start-maximized") # to start in fullscreen
 
+# getting the driver
 driver = webdriver.Chrome(options=options)
 driver.get("https://youtube.com")
 
@@ -36,9 +46,10 @@ SEARCH_TEXT = ""
 if len(sys.argv) > 1:
     for i in range(1, len(sys.argv)):
         SEARCH_TEXT += str(sys.argv[i]) + " "
-    print(SEARCH_TEXT)
+    logger.info("Searched for: %s", SEARCH_TEXT)
 else:
     SEARCH_TEXT = "Funny Videos"
+    logger.info("Searched for: %s (default)", SEARCH_TEXT)
 
 searchBox.send_keys(SEARCH_TEXT)
 searchBox.send_keys(Keys.ENTER)
