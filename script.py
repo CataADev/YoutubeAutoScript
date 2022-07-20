@@ -1,7 +1,10 @@
 import sys
 import time
+import logging
 
+import cv2
 import numpy as np
+import pyautogui
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -64,11 +67,5 @@ while 'ad-showing' in youtubeVideo.get_attribute('class').split() and 'paused-mo
         adDuration = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[17]/div/div[2]/span[2]/div').text.split(":")[1]
         print('Unskippable Ad of ' + adDuration + 's')
         time.sleep(int(adDuration) + 0.5)
-
-
-if 'paused-mode' in youtubeVideo.get_attribute('class').split():
-    print("Manually interrupted")
-
-youtubeVideo.click()
 
 driver.quit()
