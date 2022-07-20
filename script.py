@@ -26,7 +26,7 @@ SEARCH_TEXT = ""
 
 if len(sys.argv) > 1:
     for i in range(1, len(sys.argv)):
-        SEARCH_TEXT += str(sys.argv[1])
+        SEARCH_TEXT += str(sys.argv[i]) + " "
     print(SEARCH_TEXT)
 else:
     SEARCH_TEXT = "Cat Videos"
@@ -34,6 +34,4 @@ else:
 searchBox.send_keys(SEARCH_TEXT)
 searchBox.submit()
 
-
-
-# driver.close()
+driver.close()
