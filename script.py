@@ -67,7 +67,7 @@ time.sleep(0.5)
 youtubeVideo = driver.find_element(By.XPATH,'/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div')
 
 # ad handling
-while 'ad-showing' in youtubeVideo.get_attribute('class').split() and 'paused-mode' not in youtubeVideo.get_attribute('class').split():
+while 'ad-showing' in youtubeVideo.get_attribute('class').split():
     logger.info('Ad is showing')
     time.sleep(0.5)
     try:
@@ -89,11 +89,12 @@ FILENAME = "output.avi"
 FPS = 24.0
 out = cv2.VideoWriter(FILENAME, codec, FPS, SCREEN_SIZE)
 # RECORD_TIME = max(VIDEO_LENGTH, 120)
-RECORD_TIME = 10
+RECORD_TIME = 10 
 logger.info("Recording length: %ss", RECORD_TIME)
 
-timer = 0
+
 logger.info("Recording started")
+timer = 0
 while timer <= RECORD_TIME*FPS and 'ended-mode' not in youtubeVideo.get_attribute('class').split() :
     img = pyautogui.screenshot()
     frame = np.array(img)
