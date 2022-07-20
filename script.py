@@ -88,16 +88,21 @@ codec = cv2.VideoWriter_fourcc(*"XVID")
 FILENAME = "output.avi"
 FPS = 24.0
 out = cv2.VideoWriter(FILENAME, codec, FPS, SCREEN_SIZE)
-RECORD_TIME = 5
+# RECORD_TIME = max(VIDEO_LENGTH, 120)
+RECORD_TIME = 10
+logger.info("Recording length: %ss", RECORD_TIME)
 
 timer = 0
-while timer <= RECORD_TIME*FPS :
+logger.info("Recording started")
+while timer <= RECORD_TIME*FPS and 'ended-mode' not in youtubeVideo.get_attribute('class').split() :
     img = pyautogui.screenshot()
     frame = np.array(img)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     out.write(frame)
     timer += 1
-
+    
+logger.info("Recording ended")
 out.release()
 cv2.destroyAllWindows()
+
 driver.quit()
