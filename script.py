@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 # getting the driver
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
+options.add_argument("--start-maximized")
 
 driver = webdriver.Chrome(options=options)
 driver.get("https://youtube.com")
@@ -34,4 +35,9 @@ else:
 searchBox.send_keys(SEARCH_TEXT)
 searchBox.submit()
 
-driver.close()
+ytVideo = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/ytd-thumbnail/a/yt-img-shadow/img')
+ytVideo.click()
+
+
+
+# driver.close()
