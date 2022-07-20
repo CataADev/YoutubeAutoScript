@@ -2,9 +2,9 @@ import sys
 import time
 import logging
 
-# import cv2
-# import numpy as np
-# import pyautogui
+import cv2
+import numpy as np
+import pyautogui
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,33 +13,36 @@ from selenium.common.exceptions import NoSuchElementException
 
 
 # Configuring the logging
-LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
-logging.basicConfig(filename = "logfile.log",
-                    filemode = "w",
-                    format = LOG_FORMAT)
+LOG_FORMAT = "[%(levelname)s] %(asctime)s - %(message)s"
+logging.basicConfig(level = logging.INFO,
+                    format = LOG_FORMAT,
+                    handlers=[
+                        logging.FileHandler("logfile.log"),
+                        logging.StreamHandler(sys.stdout)
+                        ])
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 
 # configuring the driver
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 # options.add_argument("--start-maximized") # to start in fullscreen
-
-# getting the driver
 driver = webdriver.Chrome(options=options)
+
 driver.get("https://youtube.com")
 
 # accepting the cookies popup, if one appears
 try:
     acceptCookiesButton = driver.find_element(By.XPATH, '/html/body/ytd-app/ytd-consent-bump-v2-lightbox/tp-yt-paper-dialog/div[4]/div[2]/div[6]/div[1]/ytd-button-renderer[2]/a/tp-yt-paper-button')
+    logger.info("Cookies Pop-up Shown")
     acceptCookiesButton.click()
+    logger.info("Cookies Pop-up Succesfully Accepted")
 except NoSuchElementException:
-    pass
+    logger.info("Cookies Pop-up Not Shown")
 
 # time delay is needed to wait for the page to load
 time.sleep(1.5)
 
-# searching for the video
+# searching for the video - form command line/default
 searchBox = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/div/ytd-masthead/div[3]/div[2]/ytd-searchbox/form/div[1]/div[1]/input')
 SEARCH_TEXT = ""
 
@@ -63,20 +66,38 @@ time.sleep(0.5)
 
 youtubeVideo = driver.find_element(By.XPATH,'/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div')
 
-
+# ad handling
 while 'ad-showing' in youtubeVideo.get_attribute('class').split() and 'paused-mode' not in youtubeVideo.get_attribute('class').split():
-    print('Ad is showing')
+    logger.info('Ad is showing')
     time.sleep(0.5)
     try:
         adDuration = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[17]/div/div[3]/div/div[1]/span/div').text
-        print('Skippable Ad after ' + adDuration + 's')
+        logger.info('Skippable Ad after %ss', adDuration)
         time.sleep(int(adDuration) + 0.5)
         skipButton = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[17]/div/div[3]/div/div[2]/span/button')
         skipButton.click()
-        print('Ad Skipped')
+        logger.info('Ad Skipped')
     except NoSuchElementException:
         adDuration = driver.find_element(By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[17]/div/div[2]/span[2]/div').text.split(":")[1]
-        print('Unskippable Ad of ' + adDuration + 's')
+        logger.info('Unskippable Ad of %ss', adDuration)
         time.sleep(int(adDuration) + 0.5)
 
+# Setting up the recording process
+SCREEN_SIZE = tuple(pyautogui.size())
+codec = cv2.VideoWriter_fourcc(*"XVID")
+FILENAME = "output.avi"
+FPS = 24.0
+out = cv2.VideoWriter(FILENAME, codec, FPS, SCREEN_SIZE)
+RECORD_TIME = 5
+
+timer = 0
+while timer <= RECORD_TIME*FPS :
+    img = pyautogui.screenshot()
+    frame = np.array(img)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    out.write(frame)
+    timer += 1
+
+out.release()
+cv2.destroyAllWindows()
 driver.quit()

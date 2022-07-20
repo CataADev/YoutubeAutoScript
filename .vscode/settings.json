@@ -1,5 +1,5 @@
 {
     "python.defaultInterpreterPath": "virtual_env\\Scripts\\python",
     "python.linting.pycodestyleArgs": ["--max-line-length=200"],
-    "python.linting.pylintArgs": ["--disable={C0301}" ]
+    "python.linting.pylintArgs": ["--disable=C0301" ]
 }
