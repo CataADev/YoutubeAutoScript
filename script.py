@@ -19,7 +19,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
 # needed for joining the two
-import ffmpeg
+from moviepy.editor import *
+
+# to compute sound level
+from analyze_wav import measure_wav_db_level
 
 
 # Configuring the logging
@@ -35,17 +38,17 @@ logger = logging.getLogger()
 # configuring the driver
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
-# options.add_argument("--start-maximized") # to start in fullscreen
+options.add_argument("--start-maximized")  # to start in fullscreen
 driver = webdriver.Chrome(options=options)
 
 driver.get("https://youtube.com")
 
 # accepting the cookies popup, if one appears
 try:
-    acceptCookiesButton = driver.find_element(
+    accept_cookies = driver.find_element(
         By.XPATH, '/html/body/ytd-app/ytd-consent-bump-v2-lightbox/tp-yt-paper-dialog/div[4]/div[2]/div[6]/div[1]/ytd-button-renderer[2]/a/tp-yt-paper-button')
     logger.info("Cookies Pop-up Shown")
-    acceptCookiesButton.click()
+    accept_cookies.click()
     logger.info("Cookies Pop-up Succesfully Accepted")
 except NoSuchElementException:
     logger.info("Cookies Pop-up Not Shown")
@@ -54,7 +57,7 @@ except NoSuchElementException:
 time.sleep(1.5)
 
 # searching for the video - form command line/default
-searchBox = driver.find_element(
+search_box = driver.find_element(
     By.XPATH, '/html/body/ytd-app/div[1]/div/ytd-masthead/div[3]/div[2]/ytd-searchbox/form/div[1]/div[1]/input')
 SEARCH_TEXT = ""
 
@@ -66,22 +69,22 @@ else:
     SEARCH_TEXT = "Funny Videos"
     logger.info("Searched for: %s (default)", SEARCH_TEXT)
 
-searchBox.send_keys(SEARCH_TEXT)
-searchBox.send_keys(Keys.ENTER)
+search_box.send_keys(SEARCH_TEXT)
+search_box.send_keys(Keys.ENTER)
 
 time.sleep(1)
 
-searchedVideo = driver.find_element(
+searched_video = driver.find_element(
     By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/ytd-thumbnail/a/yt-img-shadow/img')
-searchedVideo.click()
+searched_video.click()
 
 time.sleep(0.5)
 
-youtubeVideo = driver.find_element(
+youtube_video = driver.find_element(
     By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div')
 
 # ad handling
-while 'ad-showing' in youtubeVideo.get_attribute('class').split():
+while 'ad-showing' in youtube_video.get_attribute('class').split():
     logger.info('Ad is showing')
     time.sleep(0.5)
     try:
@@ -181,12 +184,14 @@ thread1.join()
 thread2.join()
 
 logger.info("Recording ended")
+driver.quit()  # closes the window and ends chromedriver
 
-# joining the two recordings
-input_video = ffmpeg.input('./output.avi')
-input_audio = ffmpeg.input('./output.wav')
-ffmpeg.concat(input_video, input_audio, v=1, a=1).output('./output.mp4').run()
+# joining the 2 recordings
+video = VideoFileClip('output.avi')
+audio = AudioFileClip('output.wav')
 
+video = video.set_audio(audio)
+video.write_videofile('final.mp4')
 logger.info("Recordings joined")
 
-driver.quit()
+logger.info("Audio level: %s dBFS", str(measure_wav_db_level("output.wav")))
