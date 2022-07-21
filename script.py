@@ -24,7 +24,7 @@ from moviepy.editor import *
 # to compute sound level
 from analyze_wav import measure_wav_db_level
 
-# Configuring the logging
+# configuring the logging
 LOG_FORMAT = "[%(levelname)s] %(asctime)s - %(message)s"
 logging.basicConfig(level=logging.INFO,
                     format=LOG_FORMAT,
@@ -34,23 +34,39 @@ logging.basicConfig(level=logging.INFO,
                     ])
 logger = logging.getLogger()
 
+logger.info(15*"-")
+logger.info("STARTING SCRIPT")
+logger.info(15*"-")
+
 # configuring the driver
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 options.add_argument("--start-maximized")  # to start in fullscreen
-driver = webdriver.Chrome(options=options)
 
-driver.get("https://youtube.com")
+# starting the driver
+try:
+    driver = webdriver.Chrome(options=options)
+    logger.info("Driver sucessfully started")
+except:
+    logger.error("Driver start failed! Program will close!")
+    exit()
+
+# opening youtube
+try:
+    driver.get("https://youtube.com")
+    logger.info("Youtube sucessfully opened")
+except:
+    logger.info("Youtube open failed, check internet! Program will close!")
 
 # accepting the cookies popup, if one appears
 try:
     accept_cookies = driver.find_element(
         By.XPATH, '/html/body/ytd-app/ytd-consent-bump-v2-lightbox/tp-yt-paper-dialog/div[4]/div[2]/div[6]/div[1]/ytd-button-renderer[2]/a/tp-yt-paper-button')
-    logger.info("Cookies Pop-up Shown")
+    logger.info("Cookies pop-up shown")
     accept_cookies.click()
     logger.info("Cookies Pop-up Succesfully Accepted")
 except NoSuchElementException:
-    logger.info("Cookies Pop-up Not Shown")
+    logger.info("Cookies pop-up not shown")
 
 # time delay is needed to wait for the page to load
 time.sleep(1.5)
@@ -174,7 +190,6 @@ RECORD_TIME = 5
 logger.info("Recording Started")
 
 thread1 = threading.Thread(target=video_record, args=(RECORD_TIME,))
-
 thread2 = threading.Thread(target=audio_record, args=(RECORD_TIME,))
 thread1.start()
 thread2.start()
@@ -186,12 +201,13 @@ logger.info("Recording ended")
 
 driver.quit()  # closes the window and ends chromedriver
 
-# joining the 2 recordings
+logger.info("Audio level: %s dBFS", str(measure_wav_db_level("output.wav")))
+
+# merging the 2 recordings
+logger.info("Merging videos...")
 video = VideoFileClip('output.avi')
 audio = AudioFileClip('output.wav')
 
 video = video.set_audio(audio)
-video.write_videofile('final.mp4')
-logger.info("Recordings joined")
-
-logger.info("Audio level: %s dBFS", str(measure_wav_db_level("output.wav")))
+video.write_videofile('final.mp4', logger=None)
+logger.info("Recordings succesfully merged into final.mp4")
