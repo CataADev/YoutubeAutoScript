@@ -814,3 +814,38 @@
 [INFO] 2022-07-21 20:42:02,778 - Audio level: -26.5216701979355 dBFS
 [INFO] 2022-07-21 20:42:02,778 - Merging videos...
 [INFO] 2022-07-21 20:42:05,292 - Recordings succesfully merged into final.mp4
+[INFO] 2022-07-21 20:49:15,169 - ---------------
+[INFO] 2022-07-21 20:49:15,169 - STARTING SCRIPT
+[INFO] 2022-07-21 20:49:15,170 - ---------------
+[INFO] 2022-07-21 20:49:15,170 - Searching for: Funny+Videos (default)
+[INFO] 2022-07-21 20:49:16,271 - Driver sucessfully started
+[INFO] 2022-07-21 20:49:18,047 - Youtube sucessfully opened
+[INFO] 2022-07-21 20:49:18,154 - Cookies pop-up shown
+[INFO] 2022-07-21 20:49:18,275 - Cookies Pop-up Succesfully Accepted
+[INFO] 2022-07-21 20:49:52,748 - ---------------
+[INFO] 2022-07-21 20:49:52,748 - STARTING SCRIPT
+[INFO] 2022-07-21 20:49:52,749 - ---------------
+[INFO] 2022-07-21 20:49:52,749 - Searching for: Funny+Videos (default)
+[INFO] 2022-07-21 20:49:53,834 - Driver sucessfully started
+[INFO] 2022-07-21 20:49:55,452 - Youtube sucessfully opened
+[INFO] 2022-07-21 20:49:55,574 - Cookies pop-up not shown
+[INFO] 2022-07-21 20:49:56,823 - Ad is showing
+[INFO] 2022-07-21 20:49:57,429 - Unskippable Ad of 05s
+[INFO] 2022-07-21 20:50:47,123 - ---------------
+[INFO] 2022-07-21 20:50:47,123 - STARTING SCRIPT
+[INFO] 2022-07-21 20:50:47,124 - ---------------
+[INFO] 2022-07-21 20:50:47,124 - Searching for: Funny+Videos (default)
+[INFO] 2022-07-21 20:50:48,288 - Driver sucessfully started
+[INFO] 2022-07-21 20:50:49,936 - Youtube sucessfully opened
+[INFO] 2022-07-21 20:50:49,953 - Cookies pop-up shown
+[INFO] 2022-07-21 20:50:50,255 - Cookies Pop-up Succesfully Accepted
+[INFO] 2022-07-21 20:50:53,347 - Ad is showing
+[INFO] 2022-07-21 20:50:53,955 - Skippable Ad after 5s
+[INFO] 2022-07-21 20:50:59,048 - Ad Skipped
+[INFO] 2022-07-21 20:50:59,105 - Recording Started
+[INFO] 2022-07-21 20:50:59,111 - Video recording started
+[INFO] 2022-07-21 20:50:59,250 - Audio recording started
+[INFO] 2022-07-21 20:51:04,447 - Recording ended
+[INFO] 2022-07-21 20:51:06,606 - Audio level: -26.930595922000805 dBFS
+[INFO] 2022-07-21 20:51:06,607 - Merging videos...
+[INFO] 2022-07-21 20:51:09,133 - Recordings succesfully merged into final.mp4

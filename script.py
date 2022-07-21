@@ -110,7 +110,11 @@ while 'ad-showing' in youtube_video.get_attribute('class').split():
         adDuration = driver.find_element(
             By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[17]/div/div[3]/div/div[1]/span/div').text
         logger.info('Skippable Ad after %ss', adDuration)
-        time.sleep(int(adDuration) + 0.5)
+
+        driver.implicitly_wait(int(adDuration))
+        wait_for(
+            '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[17]/div/div[3]/div/div[2]/span/button')
+
         skipButton = driver.find_element(
             By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[17]/div/div[3]/div/div[2]/span/button')
         skipButton.click()
@@ -119,7 +123,7 @@ while 'ad-showing' in youtube_video.get_attribute('class').split():
         adDuration = driver.find_element(
             By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div/div[17]/div/div[2]/span[2]/div').text.split(":")[1]
         logger.info('Unskippable Ad of %ss', adDuration)
-        time.sleep(int(adDuration) + 1)
+        driver.implicitly_wait(int(adDuration) + 0.5)
 
 # Video recording
 
