@@ -43,6 +43,17 @@ options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 options.add_argument("--start-maximized")  # to start in fullscreen
 
+# getting the search query from command line/defaut
+SEARCH_TEXT = ""
+if len(sys.argv) > 1:
+    for i in range(1, len(sys.argv)):
+        SEARCH_TEXT += str(sys.argv[i]) + "+"
+    logger.info("Searched for: %s", SEARCH_TEXT)
+else:
+    SEARCH_TEXT = "Funny+Videos"
+    logger.info("Searched for: %s (default)", SEARCH_TEXT)
+URL = 'https://www.youtube.com/results?search_query=' + SEARCH_TEXT
+
 # starting the driver
 try:
     driver = webdriver.Chrome(options=options)
@@ -51,9 +62,9 @@ except:
     logger.error("Driver start failed! Program will close!")
     exit()
 
-# opening youtube
+# opening youtube to the searched video
 try:
-    driver.get("https://youtube.com")
+    driver.get(URL)
     logger.info("Youtube sucessfully opened")
 except:
     logger.info("Youtube open failed, check internet! Program will close!")
@@ -68,26 +79,7 @@ try:
 except NoSuchElementException:
     logger.info("Cookies pop-up not shown")
 
-# time delay is needed to wait for the page to load
-time.sleep(1.5)
-
-# searching for the video - form command line/default
-search_box = driver.find_element(
-    By.XPATH, '/html/body/ytd-app/div[1]/div/ytd-masthead/div[3]/div[2]/ytd-searchbox/form/div[1]/div[1]/input')
-SEARCH_TEXT = ""
-
-if len(sys.argv) > 1:
-    for i in range(1, len(sys.argv)):
-        SEARCH_TEXT += str(sys.argv[i]) + " "
-    logger.info("Searched for: %s", SEARCH_TEXT)
-else:
-    SEARCH_TEXT = "Funny Videos"
-    logger.info("Searched for: %s (default)", SEARCH_TEXT)
-
-search_box.send_keys(SEARCH_TEXT)
-search_box.send_keys(Keys.ENTER)
-
-time.sleep(1)
+time.sleep(5)
 
 searched_video = driver.find_element(
     By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/ytd-thumbnail/a/yt-img-shadow/img')
