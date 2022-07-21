@@ -15,7 +15,8 @@ import wave
 # needed for navigating a browser
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
 # needed for joining the two
@@ -23,6 +24,16 @@ from moviepy.editor import *
 
 # to compute sound level
 from analyze_wav import measure_wav_db_level
+
+
+def wait_for(ELEM_XPATH):
+    wait = WebDriverWait(driver, 5).until(
+        EC.presence_of_element_located((By.XPATH, ELEM_XPATH)))
+    wait = WebDriverWait(driver, 5).until(
+        EC.visibility_of_element_located((By.XPATH, ELEM_XPATH)))
+    wait = WebDriverWait(driver, 5).until(
+        EC.element_to_be_clickable((By.XPATH, ELEM_XPATH)))
+
 
 # configuring the logging
 LOG_FORMAT = "[%(levelname)s] %(asctime)s - %(message)s"
@@ -48,10 +59,10 @@ SEARCH_TEXT = ""
 if len(sys.argv) > 1:
     for i in range(1, len(sys.argv)):
         SEARCH_TEXT += str(sys.argv[i]) + "+"
-    logger.info("Searched for: %s", SEARCH_TEXT)
+    logger.info("Searching for: %s", SEARCH_TEXT)
 else:
     SEARCH_TEXT = "Funny+Videos"
-    logger.info("Searched for: %s (default)", SEARCH_TEXT)
+    logger.info("Searching for: %s (default)", SEARCH_TEXT)
 URL = 'https://www.youtube.com/results?search_query=' + SEARCH_TEXT
 
 # starting the driver
@@ -79,13 +90,14 @@ try:
 except NoSuchElementException:
     logger.info("Cookies pop-up not shown")
 
-time.sleep(5)
+wait_for('//*[@id="dismissible"]')
 
-searched_video = driver.find_element(
-    By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/ytd-thumbnail/a/yt-img-shadow/img')
-searched_video.click()
+video_thumbnail = driver.find_element(
+    By.XPATH, '//*[@id="dismissible"]')
+video_thumbnail.click()
 
-time.sleep(0.5)
+wait_for(
+    '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div')
 
 youtube_video = driver.find_element(
     By.XPATH, '/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div/div/div/ytd-player/div/div')
