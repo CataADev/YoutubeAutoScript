@@ -24,7 +24,6 @@ from moviepy.editor import *
 # to compute sound level
 from analyze_wav import measure_wav_db_level
 
-
 # Configuring the logging
 LOG_FORMAT = "[%(levelname)s] %(asctime)s - %(message)s"
 logging.basicConfig(level=logging.INFO,
@@ -105,7 +104,7 @@ while 'ad-showing' in youtube_video.get_attribute('class').split():
 # Video recording
 
 
-def videoRecord(RECORD_TIME):
+def video_record(RECORD_TIME):
     # Setting up the video recording process
     SCREEN_SIZE = tuple(pyautogui.size())
     codec = cv2.VideoWriter_fourcc(*"XVID")
@@ -129,7 +128,7 @@ def videoRecord(RECORD_TIME):
 # Audio recording
 
 
-def audioRecord(RECORD_SECONDS):
+def audio_record(RECORD_SECONDS):
     # Setting up the audio recording process
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
@@ -174,16 +173,17 @@ RECORD_TIME = 5
 
 logger.info("Recording Started")
 
-thread1 = threading.Thread(target=videoRecord, args=(RECORD_TIME,))
-thread1.start()
+thread1 = threading.Thread(target=video_record, args=(RECORD_TIME,))
 
-thread2 = threading.Thread(target=audioRecord, args=(RECORD_TIME,))
+thread2 = threading.Thread(target=audio_record, args=(RECORD_TIME,))
+thread1.start()
 thread2.start()
 
 thread1.join()
 thread2.join()
 
 logger.info("Recording ended")
+
 driver.quit()  # closes the window and ends chromedriver
 
 # joining the 2 recordings
