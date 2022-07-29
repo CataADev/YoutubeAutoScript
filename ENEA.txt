@@ -1,0 +1,20 @@
+SETUP PROCCESS
+
+1. Installed the latest version of Python for Windows from the official website https://www.python.org/downloads/ (comes with venv, pip and other essentials), also updated pip to latest version using py -m pip install --upgrade pip.
+
+2. Created a virtual environment in the project directory called "virtual_env" using the command py -m venv virtual_env and activated it using virtual_env\Scripts\activate.bat
+
+3. Installed Selenium using pip, through the py -m pip install -U selenium command, also installed opencv, pyaudio, numpy and pyautogui in a similar fashion
+
+4. Downloaded the Chrome Driver from the official website https://chromedriver.chromium.org/downloads and added it to the path in order to open chrome
+
+DOCUMENTATION
+
+
+
+
+
+
+
+
+
